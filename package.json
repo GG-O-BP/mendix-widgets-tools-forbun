@@ -1,13 +1,14 @@
 {
   "name": "widgets-tools",
   "engines": {
-    "node": ">=16"
+    "node": ">=16",
+    "bun": ">=1.2.0"
   },
   "scripts": {
-    "install:gw": "cd ./packages/generator-widget && npm install",
-    "install:pwt": "cd ./packages/pluggable-widgets-tools && npm install",
-    "postinstall": "npm run install:gw && npm run install:pwt",
-    "reinstall": "shx rm -rf ./node_modules \"./packages/{generator-widget,pluggable-widgets-tools}/node_modules\" && npm install",
+    "install:gw": "cd ./packages/generator-widget && bun install",
+    "install:pwt": "cd ./packages/pluggable-widgets-tools && bun install",
+    "postinstall": "bun run install:gw && bun run install:pwt",
+    "reinstall": "shx rm -rf ./node_modules \"./packages/{generator-widget,pluggable-widgets-tools}/node_modules\" && bun install",
     "test:pwt:commands": "node tests/commands.js",
     "prettier": "prettier --config \"./prettier.config.js\" --write \"**/*.{js,jsx,ts,tsx,scss,html,xml,yml,yaml}\"",
     "lint:scripts": "eslint --fix --config .eslintrc.js --ext .jsx,.js,.ts,.tsx scripts",
@@ -41,6 +42,13 @@
     "yeoman-environment": "^3.12.1",
     "yeoman-test": "^6.3.0"
   },
+  "trustedDependencies": [
+    "@swc/core",
+    "bufferutil",
+    "esbuild",
+    "protobufjs",
+    "utf-8-validate"
+  ],
   "license": "Apache-2.0",
   "copyright": "© Mendix Technology BV 2022. All rights reserved.",
   "repository": {

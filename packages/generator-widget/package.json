@@ -3,7 +3,8 @@
   "version": "10.15.1",
   "description": "Mendix Pluggable Widgets Generator",
   "engines": {
-    "node": ">=16"
+    "node": ">=16",
+    "bun": ">=1.2.0"
   },
   "bin": "./bin.js",
   "main": "app/index.js",

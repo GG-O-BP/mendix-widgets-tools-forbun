@@ -3,7 +3,8 @@
   "version": "10.21.1",
   "description": "Mendix Pluggable Widgets Tools",
   "engines": {
-    "node": ">=20"
+    "node": ">=20",
+    "bun": ">=1.2.0"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -131,6 +132,13 @@
     "react-dom": "$react-dom",
     "react-native": "$react-native"
   },
+  "trustedDependencies": [
+    "@swc/core",
+    "bufferutil",
+    "esbuild",
+    "protobufjs",
+    "utf-8-validate"
+  ],
   "keywords": [
     "typings",
     "typescript",

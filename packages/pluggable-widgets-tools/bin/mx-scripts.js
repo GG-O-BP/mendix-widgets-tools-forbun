@@ -32,7 +32,7 @@ checkNodeVersion();
                 ...process.env,
                 PATH: [process.env.PATH].concat(nodeModulesBins).join(delimiter),
                 // Hack for Windows using NTFS Filesystem, we cannot add platform specific check otherwise GitBash or other linux based terminal on windows will also fail.
-                Path: [process.env.Path].concat(nodeModulesBins).join(delimiter),
+                Path: [process.env.Path].concat(nodeModulesBins).join(delimiter)
             },
             shell: true,
             stdio: "inherit"
@@ -123,28 +123,55 @@ function findNodeModulesBin() {
 }
 
 function checkNodeVersion() {
-    console.log("Checking node and npm version...");
+    console.log("Checking runtime version...");
     try {
-        const nodeVersion = extractMajorVersion(execSync("node --version").toString().trim());
-        const npmVersion = extractMajorVersion(execSync("npm --version").toString().trim());
-        if (nodeVersion < 16) {
-            console.error(
-                "To build this widget a minimum node version 16.0.0 is required. Please upgrade your node version!"
-            );
-            process.exit(1);
+        // Check if running with bun
+        let isBun = false;
+        try {
+            const bunVersion = execSync("bun --version").toString().trim();
+            console.log(`Bun version: ${bunVersion}`);
+            isBun = true;
+
+            // For bun, we check the minimum version
+            const bunMajor = extractMajorVersion(bunVersion);
+            const bunMinor = extractMinorVersion(bunVersion);
+            if (bunMajor < 1 || (bunMajor === 1 && bunMinor < 2)) {
+                console.error(
+                    "To build this widget a minimum bun version 1.2.0 is required. Please upgrade your bun version!"
+                );
+                process.exit(1);
+            }
+        } catch (e) {
+            // Bun not found, check for node/npm
         }
-        if (npmVersion < 8) {
-            console.error(
-                "To build this widget a minimum npm version 8.0.0 is required. Please upgrade your npm version!"
-            );
-            process.exit(1);
+
+        if (!isBun) {
+            const nodeVersion = extractMajorVersion(execSync("node --version").toString().trim());
+            const npmVersion = extractMajorVersion(execSync("npm --version").toString().trim());
+            if (nodeVersion < 16) {
+                console.error(
+                    "To build this widget a minimum node version 16.0.0 is required. Please upgrade your node version!"
+                );
+                process.exit(1);
+            }
+            if (npmVersion < 8) {
+                console.error(
+                    "To build this widget a minimum npm version 8.0.0 is required. Please upgrade your npm version!"
+                );
+                process.exit(1);
+            }
         }
     } catch (e) {
-        throw new Error("Cannot find node or npm to determine the version");
+        throw new Error("Cannot find bun, node or npm to determine the version");
     }
 }
 
 function extractMajorVersion(version) {
     const majorVersion = version.replace(/^\D+/, "").split(".")[0];
     return Number(majorVersion);
+}
+
+function extractMinorVersion(version) {
+    const minorVersion = version.replace(/^\D+/, "").split(".")[1];
+    return Number(minorVersion);
 }
